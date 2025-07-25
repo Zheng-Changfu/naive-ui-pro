@@ -4,6 +4,7 @@ import {
   breadcrumbPlugin,
   createRouter,
   documentTitlePlugin,
+  exactRenderPlugin,
   keepAlivePlugin,
   linkPlugin,
   nMenuPlugin,
@@ -106,6 +107,11 @@ export async function setupRouter(app: App) {
           }
         },
       }),
+      /**
+       * 路由视图精确渲染插件，将会为 RouterView 扩展 exact 属性，
+       * 设置后可以精准渲染与当前路由匹配的视图组件
+       */
+      exactRenderPlugin(),
     ],
   })
   app.use(router)

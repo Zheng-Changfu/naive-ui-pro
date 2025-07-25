@@ -2,7 +2,10 @@
 </script>
 
 <template>
-  <router-view v-slot="{ Component }">
+  <router-view
+    v-slot="{ Component }"
+    exact
+  >
     <transition v-bind="$router.currentRouteTransitionProps.value">
       <keep-alive :include="$router.keepAliveList.value">
         <component
