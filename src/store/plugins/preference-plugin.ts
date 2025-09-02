@@ -115,9 +115,8 @@ export function preferencePlugin({ pinia, options, store, app }: PiniaPluginCont
     useEventListener('beforeunload', () => {
       clearInterval(checkStorageInterval)
 
-      // 如果用户清除了存储，则不重新保存偏好
+      // 如果用户清除了存储,恢复到默认值
       if (userClearedStorage) {
-        // 恢复到默认值
         store.$restoreAllPreference()
       }
 
