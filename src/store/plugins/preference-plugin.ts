@@ -32,7 +32,6 @@ declare module 'pinia' {
 
 const { copy } = useClipboard()
 let registedBeforeunloadEvent = false
-let userClearedStorage = false // 标记用户是否清除了存储
 const storeIdToKeysInitialValueRecord = new Map<string, {
   prefixPath: string
   initialValueMap: Map<string, any>
@@ -97,36 +96,13 @@ export function preferencePlugin({ pinia, options, store, app }: PiniaPluginCont
   if (!registedBeforeunloadEvent) {
     registedBeforeunloadEvent = true
 
-    // 监听storage事件，检测用户是否清除了localStorage
-    useEventListener('storage', (e) => {
-      if (e.key === 'preference' && e.newValue === null) {
-        userClearedStorage = true
-      }
-    })
-
-    // 定期检查localStorage是否被清空（处理同标签页清除的情况）
-    const checkStorageInterval = setInterval(() => {
-      const currentPreference = localStorage.getItem('preference')
-      if (currentPreference === null && !userClearedStorage) {
-        userClearedStorage = true
-      }
-    }, 1000)
-
     useEventListener('beforeunload', () => {
-      clearInterval(checkStorageInterval)
-
-      // 如果用户清除了存储,恢复到默认值
-      if (userClearedStorage) {
-        store.$restoreAllPreference()
-      }
-
       localStorage.setItem('preference', JSON.stringify(getAllPreference(pinia)))
     })
   }
 
   app.onUnmount(() => {
     registedBeforeunloadEvent = false
-    userClearedStorage = false // 重置标记
     localStorage.removeItem('preference')
     storeIdToKeysInitialValueRecord.clear()
     delete (store as any).$copyAllPreference
