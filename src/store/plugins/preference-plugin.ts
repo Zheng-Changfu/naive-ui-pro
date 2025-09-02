@@ -1,4 +1,5 @@
 import type { Pinia, PiniaPluginContext, Store } from 'pinia'
+import { preferenceConfig } from '@root/preference'
 import { useClipboard, useEventListener } from '@vueuse/core'
 import { cloneDeep, get, has, set } from 'lodash-es'
 
@@ -18,6 +19,10 @@ declare module 'pinia' {
      * 重置所有 store 的偏好
      */
     $resetAllPreference: () => void
+    /**
+     * 恢复所有 store 的偏好到配置文件默认值
+     */
+    $restoreAllPreference: () => void
     /**
      * 复制所有 store 的偏好到剪贴板
      */
@@ -68,6 +73,21 @@ export function preferencePlugin({ pinia, options, store, app }: PiniaPluginCont
       })
     })
   }
+  store.$restoreAllPreference = () => {
+    const storeMap = (pinia as any)._s as Map<string, Store>
+    storeMap.forEach((s) => {
+      if (!storeIdToKeysInitialValueRecord.has(s.$id)) {
+        return
+      }
+      const { prefixPath, initialValueMap } = storeIdToKeysInitialValueRecord.get(s.$id)!
+      initialValueMap.forEach((_, key) => {
+        const configValue = get(preferenceConfig, `${prefixPath}.${key}`)
+        if (configValue !== undefined) {
+          (s as any)[key] = configValue
+        }
+      })
+    })
+  }
 
   store.$copyAllPreference = () => {
     const preferences = getAllPreference(pinia)
@@ -97,7 +117,8 @@ export function preferencePlugin({ pinia, options, store, app }: PiniaPluginCont
 
       // 如果用户清除了存储，则不重新保存偏好
       if (userClearedStorage) {
-        return
+        // 恢复到默认值
+        store.$restoreAllPreference()
       }
 
       localStorage.setItem('preference', JSON.stringify(getAllPreference(pinia)))
