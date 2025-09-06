@@ -53,10 +53,9 @@ export const useUserStore = defineStore('user', () => {
       const res = await Api.login(payload)
       const token = user.value.token = res.data.token
       localStorage.setItem('token', token)
-      const info = await fetchUpdateUserInfo()
       const redirect = route.query.redirect as string ?? HOME_ROUTE_PATH
       await router.push(redirect)
-      return info
+      return payload.username
     }
     finally {
       loading.value = false

@@ -30,7 +30,7 @@ const form = createProForm({
       const user = await userStore.login(values)
       notification.success({
         title: $t('pages.login.loginSuccess'),
-        content: `${$t('pages.login.welcomeBack')}，${user.name}`,
+        content: `${$t('pages.login.welcomeBack')},${user}`,
         duration: 2000,
       })
     }
