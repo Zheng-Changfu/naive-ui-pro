@@ -85,7 +85,7 @@ function cancelEditable(id: string) {
 
 <template>
   <pro-card :title="$t('pages.demos.complexForm.dataTable.title')">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-24px">
+    <div class="grid-cols-responsive gap-x-24px">
       <pro-select
         :title="$t('pages.demos.complexForm.dataTable.department')"
         path="department"

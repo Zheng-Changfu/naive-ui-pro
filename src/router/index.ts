@@ -35,7 +35,6 @@ import { tabsPlugin } from './plugins/tabs-plugin'
 
 import {
   accessRoutes,
-  HOME_ROUTE_PATH,
   ignoreAccessRoutes,
   LOGIN_ROUTE_PATH,
   notFoundRoute,
@@ -116,7 +115,9 @@ export async function setupRouter(app: App) {
       /**
        * 自动重定向到目标路由插件
        */
-      autoRedirectPlugin(),
+      autoRedirectPlugin({
+        homePath: () => useUserStore().homePath,
+      }),
       /**
        * 权限插件
        */
@@ -130,7 +131,7 @@ export async function setupRouter(app: App) {
           }
           const baseInfo: RbacAccessPluginBaseServiceReturned = {
             logined: !!userStore.user.token,
-            homePath: HOME_ROUTE_PATH,
+            homePath: userStore.homePath,
             loginPath: LOGIN_ROUTE_PATH,
             parentNameForAddRoute: ROOT_ROUTE_NAME,
             onRoutesBuilt: (routes) => {

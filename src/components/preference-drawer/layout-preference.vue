@@ -24,6 +24,7 @@ const {
   sidebarMenuGroup,
   sidebarMenuDivider,
   sidebarCollapsedWidth,
+  resetCacheAfterCloseTab,
   sidebarCollapsedShowMenuTitle,
 } = storeToRefs(useLayoutStore())
 
@@ -122,6 +123,10 @@ const layoutOptions = computed<Array<{ label: string, value: ProLayoutMode }>>((
       <div class="preference-item">
         <span>{{ $t('common.preference.layout.tabsPersist') }}</span>
         <n-switch v-model:value="tabsPersist" />
+      </div>
+      <div class="preference-item">
+        <span>{{ $t('common.preference.layout.resetCacheAfterCloseTab') }}</span>
+        <n-switch v-model:value="resetCacheAfterCloseTab" />
       </div>
       <div class="preference-item">
         <span>{{ $t('common.preference.layout.tabbarHeight') }}</span>

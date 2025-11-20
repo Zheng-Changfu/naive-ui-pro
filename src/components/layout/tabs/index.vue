@@ -64,7 +64,7 @@ watch(
   () => routes[activeIndex.value]?.path,
   async () => {
     const path = routes[activeIndex.value]?.path
-    if (path && route.fullPath && path !== route.fullPath) {
+    if (path && path !== route.path && path !== route.fullPath) {
       router.push(path)
     }
   },

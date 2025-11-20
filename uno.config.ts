@@ -13,4 +13,14 @@ export default defineConfig({
     presetWind3(),
     presetTypography(),
   ],
+  shortcuts: [
+    {
+      'grid-cols-responsive': 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+    },
+    [
+      /^grid-cols-responsive-(\d)-(\d)-(\d)$/,
+      ([, sm, md, lg]) =>
+        `grid grid-cols-${sm} md:grid-cols-${md} lg:grid-cols-${lg}`,
+    ],
+  ],
 })

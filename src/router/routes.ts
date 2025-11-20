@@ -2,11 +2,6 @@ import type { Component } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 
 /**
- * 首页路由名称
- */
-const HOME_ROUTE_PATH = '/home'
-
-/**
  * 登录路由名称
  */
 const LOGIN_ROUTE_PATH = '/login'
@@ -30,7 +25,6 @@ const notFoundRoute: RouteRecordRaw = {
 const rootRoute = {
   path: '/',
   name: ROOT_ROUTE_NAME,
-  redirect: HOME_ROUTE_PATH,
   component: () => import('@/components/layout/index.vue'),
   children: [],
   meta: {
@@ -58,7 +52,7 @@ const ignoreAccessRoutes: RouteRecordRaw[] = [
  */
 const accessRoutes: RouteRecordRaw[] = [
   {
-    path: HOME_ROUTE_PATH,
+    path: '/home',
     component: () => import('@/views/home/index.vue'),
     meta: {
       title: '首页',
@@ -267,6 +261,39 @@ const accessRoutes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'nested-detail2',
+        component: () => import('@/views/demos/nested/demo2/index.vue'),
+        redirect: { name: 'nestedDetail2:detail1' },
+        children: [
+          {
+            path: 'detail1',
+            name: 'nestedDetail2:detail1',
+            component: () => import('@/views/demos/nested/demo2/detail1.vue'),
+            meta: {
+              title: '详情页（1）',
+              titleI18nKey: 'routes.detail1',
+              hideInMenu: true,
+            },
+          },
+          {
+            path: 'detail2',
+            name: 'nestedDetail2:detail2',
+            component: () => import('@/views/demos/nested/demo2/detail2.vue'),
+            meta: {
+              title: '详情页（2）',
+              titleI18nKey: 'routes.detail2',
+              hideInMenu: true,
+            },
+          },
+        ],
+        meta: {
+          title: '嵌套详情页（2）',
+          titleI18nKey: 'routes.nestedDetail2',
+          icon: 'bx:detail',
+          nestedRouteRenderEnd: true,
+        },
+      },
+      {
         path: 'keep-alive',
         children: [
           {
@@ -412,7 +439,6 @@ const pageMap = Object.entries(matched).reduce<Record<string, Component>>((p, [p
 
 export {
   accessRoutes,
-  HOME_ROUTE_PATH,
   ignoreAccessRoutes,
   LOGIN_ROUTE_PATH,
   notFoundRoute,

@@ -45,6 +45,9 @@ export function refreshPlugin(): ProRouterPlugin {
     router.getRouteKey = () => {
       const to = router.currentRoute.value
       const name = getRouteComponentName(to) ?? to.meta[ROUTE_NAME].toString()
+      if (!routeKeyMap.value.has(name)) {
+        return
+      }
       const { key, timestamp } = routeKeyMap.value.get(name)!
       return timestamp ? `${key}${timestamp}` : key
     }

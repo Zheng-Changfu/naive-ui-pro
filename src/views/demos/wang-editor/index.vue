@@ -66,7 +66,7 @@ function handleValidate(e: MouseEvent) {
 <template>
   <div class="size-full justify-center items-center">
     <n-card :title="$t('pages.demos.wangEditor.basicUsage')">
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-3 mb-4">
+      <div class="grid-cols-responsive-1-3-3 gap-4 mb-4">
         <div>
           <div>{{ $t('pages.demos.wangEditor.editorHeight') }}</div>
           <n-input-number

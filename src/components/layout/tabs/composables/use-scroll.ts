@@ -35,9 +35,11 @@ export function useScroll() {
 
   function handleWheel(event: WheelEvent) {
     if (scrollbarRef.value) {
+      // 判断手势决定使用水平滚动量还是纵向滚动量
       scrollbarRef.value.scrollBy({
-        left: event.deltaY,
-        behavior: 'smooth',
+        left: Math.abs(event.deltaX) > Math.abs(event.deltaY)
+          ? event.deltaX
+          : event.deltaY,
       })
     }
   }

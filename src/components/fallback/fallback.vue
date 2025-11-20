@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import { computed } from 'vue'
 import { $t } from '@/locales/locales'
-import { HOME_ROUTE_PATH } from '@/router/routes'
+import { useUserStore } from '@/store/use-user-store'
 import Fallback403 from './403.vue'
 import Fallback404 from './404.vue'
 import Fallback500 from './500.vue'
@@ -16,6 +16,8 @@ const props = withDefaults(defineProps<Props>(), {
   title: '',
   description: '',
 })
+
+const userStore = useUserStore()
 
 const title = computed(() => {
   if (props.title) {
@@ -75,7 +77,7 @@ const description = computed(() => {
       <div class="flex flex-wrap gap-3 justify-center pt-4">
         <n-button
           type="primary"
-          @click="$router.push(HOME_ROUTE_PATH)"
+          @click="$router.push(userStore.homePath)"
         >
           {{ $t('common.fallback.backHome') }}
         </n-button>

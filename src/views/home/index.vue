@@ -238,7 +238,7 @@ const projectUpdates = computed(() => [
     </div>
 
     <!-- 数据概览卡片 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-3">
+    <div class="grid-cols-responsive-1-2-4 gap-5 mb-3">
       <n-card
         v-for="(card, index) in statCards"
         :key="index"
@@ -282,7 +282,7 @@ const projectUpdates = computed(() => [
     </div>
 
     <!-- 活动记录和项目动态 -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-3">
+    <div class="grid-cols-responsive-1-1-2 gap-6 mb-3">
       <!-- 活动记录 -->
       <n-card
         :title="$t('pages.home.activityLog')"

@@ -31,7 +31,7 @@ type ResolveComponent = (component: string) => NonNullable<RouteRecordRaw['compo
 
 export interface BaseServiceReturned {
   /**
-   * 首页路径，登录后会跳转到此路径
+   * 首页路径，已登录跳转 login 页面，重定向到 redirect 参数或者 homePath
    * @default '/home'
    */
   homePath?: string

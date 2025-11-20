@@ -216,7 +216,7 @@ const tableColumns = computed<ProDataTableColumns<Menu>>(() => {
             options: translateOptions(typeOptions),
           }"
         />
-        <div class="grid grid-cols-1 gap-x-0 md:grid-cols-2 md:gap-x-4">
+        <div class="grid-cols-responsive-1-2-2 gap-x-0 md:gap-x-4">
           <menu-drawer-form v-if="drawerForm.values.value.type === menuTypeEnum.MENU" />
           <directory-drawer-form v-else-if="drawerForm.values.value.type === menuTypeEnum.DIRECTORY" />
         </div>

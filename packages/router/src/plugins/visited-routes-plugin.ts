@@ -60,7 +60,7 @@ interface Interceptor {
   /**
    * 在添加路由之后执行
    */
-  afterAdd?: (callback: (route: RouteLocationNormalized) => MaybePromise<void>) => () => void
+  afterAdd?: (callback: (route: RouteLocationNormalized) => void) => () => void
   /**
    * 在移除路由之前执行
    */
@@ -68,7 +68,7 @@ interface Interceptor {
   /**
    * 在移除路由之后执行
    */
-  afterRemove?: (callback: (index: number) => MaybePromise<void>) => () => void
+  afterRemove?: (callback: ([removedIndex, removedRoute]: [number, RouteLocationNormalized]) => void) => () => void
   /**
    * 在移动路由之前执行
    */
@@ -76,7 +76,7 @@ interface Interceptor {
   /**
    * 在移动路由之后执行
    */
-  afterMove?: (callback: ([from, to]: [number, number]) => MaybePromise<void>) => () => void
+  afterMove?: (callback: ([from, to]: [number, number]) => void) => () => void
 }
 
 class InterceptorStore {
@@ -127,7 +127,7 @@ class InterceptorStore {
     }
     else {
       for (let i = 0; i < interceptors.length; i++) {
-        await interceptors[i](params as any)
+        interceptors[i](params as any)
       }
     }
   }
@@ -154,7 +154,7 @@ export function visitedRoutesPlugin(): ProRouterPlugin {
           return false
         }
         visitedRoutes.value.push(result)
-        await interceptorStore.run('afterAdd', result)
+        interceptorStore.run('afterAdd', result)
       }
       return successed
     }
@@ -173,7 +173,7 @@ export function visitedRoutesPlugin(): ProRouterPlugin {
       const successed = result !== false
       if (successed) {
         _move(visitedRoutes.value, result[0], result[1])
-        await interceptorStore.run('afterMove', result)
+        interceptorStore.run('afterMove', result)
       }
       return successed
     }
@@ -188,8 +188,9 @@ export function visitedRoutesPlugin(): ProRouterPlugin {
       const result = await interceptorStore.run('beforeRemove', index)
       const successed = result !== false
       if (successed) {
+        const removedRoute = visitedRoutes.value[result]
         visitedRoutes.value.splice(result, 1)
-        await interceptorStore.run('afterRemove', result)
+        interceptorStore.run('afterRemove', [result, removedRoute as RouteLocationNormalized])
       }
       return successed
     }
@@ -234,7 +235,7 @@ export function visitedRoutesPlugin(): ProRouterPlugin {
       activeIndex.value = visitedRoutes.value.length - 1
     })
 
-    interceptorStore.on('afterRemove', (removedIndex) => {
+    interceptorStore.on('afterRemove', ([removedIndex]) => {
       const i = activeIndex.value
       if (removedIndex < i || (removedIndex === i && i === visitedRoutes.value.length)) {
         activeIndex.value--
@@ -259,7 +260,7 @@ export function visitedRoutesPlugin(): ProRouterPlugin {
     router.afterEach((to) => {
       const invalidRoute = to.matched.length === 0
       if (!invalidRoute) {
-        add({ ...to, path: to.fullPath })
+        add(to)
       }
     })
 
@@ -324,5 +325,5 @@ export function visitedRoutesPlugin(): ProRouterPlugin {
 }
 
 export function isEqualRoute(a: RouteLocationNormalized, b: RouteLocationNormalized) {
-  return a.path === b.path
+  return a.path === b.path || a.path === b.fullPath
 }

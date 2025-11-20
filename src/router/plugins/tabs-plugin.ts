@@ -1,6 +1,6 @@
 import type { ProRouterPlugin } from '@pro/router'
 import type { RouteLocationNormalized } from 'vue-router'
-import { isEqualRoute } from '@pro/router'
+import { getRouteComponentName, isEqualRoute } from '@pro/router'
 import { useEventListener } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import { useLayoutStore } from '@/store/use-layout-store'
@@ -26,6 +26,7 @@ export function tabsPlugin(): ProRouterPlugin {
   return ({ router }) => {
     const {
       tabsPersist,
+      resetCacheAfterCloseTab,
     } = storeToRefs(useLayoutStore())
 
     const {
@@ -60,6 +61,21 @@ export function tabsPlugin(): ProRouterPlugin {
       if (route?.meta?.fixedInTabs) {
         const fixedCount = routes.filter(r => r.meta?.fixedInTabs).length - 1
         await move(routes.length - 1, Math.max(0, fixedCount))
+      }
+    })
+
+    // 关闭标签页后重置缓存
+    guards.afterRemove(([,removedRoute]) => {
+      if (resetCacheAfterCloseTab.value) {
+        const name = getRouteComponentName(removedRoute)
+        const index = router.cachedComponentNames.value.indexOf(name!)
+        if (~index) {
+          // 这里要在路由跳转之后在执行删除，因为 keepAlivePlugin 缓存组件的时机是路由跳转之后，提前删除无效，因为 keepAlivePlugin 会重新添加上去
+          const cleanup = router.afterEach(() => {
+            router.cachedComponentNames.value.splice(index, 1)
+            cleanup()
+          })
+        }
       }
     })
 

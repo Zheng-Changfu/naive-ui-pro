@@ -79,6 +79,10 @@ export const preferenceConfig = {
      */
     tabsPersist: true,
     /**
+     * 关闭标签页后是否重置缓存
+     */
+    resetCacheAfterCloseTab: true,
+    /**
      * 侧边栏折叠后的宽度
      */
     sidebarCollapsedWidth: 58,
