@@ -51,7 +51,7 @@ export function nestedRouteRenderPlugin(): ProRouterPlugin {
             }
 
             // 清除深度大于视图深度且不是最后一个的路由组件
-            if (index > viewDepth && index !== arr.length - 1) {
+            if (index >= viewDepth && index !== arr.length - 1) {
               return {
                 ...item,
                 components: undefined,
