@@ -8,6 +8,7 @@ import { useLayoutMenu } from 'pro-naive-ui'
 import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useLayoutStore } from '@/store/use-layout-store'
+import { isSafari } from '@/utils/brower'
 import { ProMenu } from '../menu'
 import CollapseSidebarButton from './collapse-sidebar-button.vue'
 import Content from './content.vue'
@@ -20,6 +21,7 @@ import Tabbar from './tabbar.vue'
 const route = useRoute()
 const router = useRouter()
 const vars = useThemeVars()
+const safariPlatform = isSafari()
 
 const {
   mode,
@@ -156,6 +158,10 @@ async function pushTo(path: string) {
     :show-sidebar-extra="showSidebarExtra"
     content-class="pro-layout__content--embedded p-16px"
     :sidebar-collapsed-width="finalSidebarCollapsedWidth"
+    :scrollbar-props="{
+      // @ts-ignore
+      class: safariPlatform && 'pro-layout__scrollbar--safari',
+    }"
   >
     <template #logo>
       <logo />
@@ -242,8 +248,24 @@ async function pushTo(path: string) {
   </pro-layout>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 :deep(.n-pro-layout__content.pro-layout__content--embedded) {
   background-color: v-bind('vars.actionColor');
+}
+
+/**
+ 修复 safari 中 height:100% 无效问题
+*/
+:deep(.pro-layout__scrollbar--safari) {
+  & > .n-scrollbar-container {
+    display: flex;
+    flex-direction: column;
+
+    & > .n-scrollbar-content {
+      flex-grow: 1;
+      flex-basis: 0;
+      min-height: auto;
+    }
+  }
 }
 </style>
